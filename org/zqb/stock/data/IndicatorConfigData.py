@@ -13,8 +13,9 @@ class IndicatorConfigData:
         self.iClassName = [];
         self.iClassLabel = {};
         self.iClassData = {}
+
         self.loadConfigData()
-        #self.iClassData = self.iClassData['indicator_config']
+
         self.iClassName = [e for e in self.iClassData.keys()]
         sql = "SELECT COLUMN_NAME, column_comment,' ' FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'stock' and column_name not in ('seq','code','name','year','quarter','month','day') AND TABLE_NAME = %s"
         d = {}

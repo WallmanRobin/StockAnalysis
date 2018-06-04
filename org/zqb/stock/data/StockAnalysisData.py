@@ -11,7 +11,7 @@ class StockAnalysisData:
         conn = MysqlUtil.getDBConn()
         #取最近的年和季度
         year = time.localtime()[0] - (time.localtime()[1] == 1)
-        quarter = quarter=(time.localtime()[1] if time.localtime()[1]>3 else 12)//3
+        quarter=((time.localtime()[1]-1) if time.localtime()[1]>3 else 12)//3
         dateWhere = "  A.YEAR=%d AND A.QUARTER=%d"%(year, quarter)
         excludeWhere = " AND NOT EXISTS(SELECT 'x' FROM terminateda Z WHERE A.CODE=Z.CODE) AND NOT EXISTS(SELECT 'x' FROM suspended Z WHERE A.CODE=Z.CODE)"
 

@@ -1,4 +1,5 @@
 import sys
+from PyQt5 import QtCore
 from PyQt5.QtWidgets import (QApplication, QHeaderView, QStyle, QStyleOptionButton, QTableView)
 from PyQt5.QtCore import (pyqtSignal, Qt, QAbstractTableModel, QModelIndex, QRect, QVariant)
 from pandas import DataFrame
@@ -49,16 +50,16 @@ class CheckboxTableViewModel(QAbstractTableModel):
         super(CheckboxTableViewModel, self).__init__(parent)
         self.tableData = None
         self.checkList = []
-        self.title = [[]]
+        self.title = []
     def setTableData(self, tableData):
         self.tableData = tableData
         #self.checkList = ['Unchecked' for e in self.tableData]
     def setTitle(self, title):
         self.title = title
-    def rowCount(self, QModelIndex):
+    def rowCount(self, index):
         return len(self.checkList)
 
-    def columnCount(self, QModelIndex):
+    def columnCount(self, index):
         return len(self.title)
 
     def data(self, index, role):
@@ -70,6 +71,10 @@ class CheckboxTableViewModel(QAbstractTableModel):
         elif role == Qt.CheckStateRole:
             if col == 0:
                 return Qt.Unchecked if 'Unchecked' in self.checkList[row] else Qt.Checked
+        elif role == Qt.ToolTipRole:
+            if col == 0 or col == 1:
+                pass
+
         return QVariant()
 
     def setData(self, index, value, role):
@@ -82,21 +87,24 @@ class CheckboxTableViewModel(QAbstractTableModel):
         return True
 
     def flags(self, index):
-        if index.column() == 0:
-            return Qt.ItemIsEnabled | Qt.ItemIsUserCheckable|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled
-        return Qt.ItemIsEnabled|Qt.ItemIsDragEnabled|Qt.ItemIsDropEnabled
+        #第一个if很重要，如果不加就没有列拖拽效果
+        if index.isValid():
+            if index.column() == 0:
+                return Qt.ItemIsEnabled | Qt.ItemIsUserCheckable
+            else:
+                if index.column() == 1:
+                    return Qt.ItemIsEnabled
+                else:
+                    return Qt.ItemIsDragEnabled | Qt.ItemIsDropEnabled | Qt.ItemIsEnabled | Qt.ItemIsSelectable
+
+        return Qt.ItemIsEditable | Qt.ItemIsEnabled | Qt.ItemIsSelectable
 
     def headerData(self, section, orientation, role):
         #self.title=['名称','说明']
         if role == Qt.DisplayRole:
             if orientation == Qt.Horizontal:
                 return self.title[section]
-                '''
-                if section == 0:
-                    return 'Title 1'
-                elif section == 1:
-                    return 'Title 2'
-                '''
+
     '''
     def headerClick(self, isOn):
         self.beginResetModel()
@@ -108,6 +116,20 @@ class CheckboxTableViewModel(QAbstractTableModel):
         self.endResetModel()
     '''
 
+    def swapTableDataColumns(self, sourceCol, targetCol):
+        self.beginResetModel();
+        cl = [e for e in self.tableData.columns]
+        oe = cl[sourceCol]
+        te = cl[targetCol]
+        cl[sourceCol] = te
+        cl[targetCol] = oe
+        oe = self.title[sourceCol]
+        te = self.title[targetCol]
+        self.title[sourceCol] = te
+        self.title[targetCol] = oe
+        self.tableData = self.tableData.ix[:, cl]
+        self.endResetModel();
+
     def sort(self, Ncol, order):
         """Sort table by given column number.
         """
@@ -117,9 +139,14 @@ class CheckboxTableViewModel(QAbstractTableModel):
             asc = False
         self.tableData = self.tableData.sort_values(by=self.tableData.columns[Ncol],ascending=asc)
         self.layoutChanged.emit()
-
+    '''
     def supportedDropActions(self):
         return Qt.CopyAction | Qt.MoveAction;
 
     def supportedDragActions(self):
         return Qt.CopyAction | Qt.MoveAction;
+
+    def dragMoveEvent(self, event):
+        event.setDropAction(QtCore.Qt.MoveAction)
+        event.accept()
+    '''

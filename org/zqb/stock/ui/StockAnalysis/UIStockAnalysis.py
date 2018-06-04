@@ -7,6 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from org.zqb.stock.ui.StockAnalysis.StockAnalysisTableView import StockAnalysisTableView
 
 class UIStockAnalysis(object):
     def setupUi(self, MainWindow):
@@ -16,14 +17,16 @@ class UIStockAnalysis(object):
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
-        self.tableViewStock = QtWidgets.QTableView(self.centralwidget)
+        #要替换成支持拖拽换列顺序的类
+        self.tableViewStock = StockAnalysisTableView(self.centralwidget)
+        self.tableViewStock.setMouseTracking(True)
         self.tableViewStock.setAcceptDrops(True)
         self.tableViewStock.setDragEnabled(True)
-        self.tableViewStock.setDragDropOverwriteMode(False)
-        self.tableViewStock.setDragDropMode(QtWidgets.QTableView.InternalMove)
+        self.tableViewStock.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop)
         self.tableViewStock.setDefaultDropAction(QtCore.Qt.MoveAction)
-        self.tableViewStock.setSelectionMode(QtWidgets.QTableView.SingleSelection)
-        self.tableViewStock.setSelectionBehavior(QtWidgets.QTableView.SelectColumns)
+        self.tableViewStock.setAlternatingRowColors(True)
+        self.tableViewStock.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        self.tableViewStock.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
         self.tableViewStock.setSortingEnabled(True)
         self.tableViewStock.setObjectName("tableViewStock")
         self.gridLayout.addWidget(self.tableViewStock, 0, 0, 1, 1)

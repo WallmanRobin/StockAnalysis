@@ -26,6 +26,7 @@ class SimpleTableModel(QAbstractTableModel):
                 return t[section]
 
     def flags(self, index):
+
         return Qt.ItemIsEnabled|Qt.ItemIsEditable
 
 app = QtWidgets.QApplication(sys.argv)

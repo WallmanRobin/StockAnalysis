@@ -5,7 +5,7 @@ import pymysql
 import time
 import math
 import importlib
-from pandas._libs.tslib import Timestamp
+import pandas as pd
 
 
 class TushareUtility:
@@ -13,7 +13,7 @@ class TushareUtility:
         conn = pymysql.connect(host, user, passwd, db)
         return conn
 
-    def getStockBasics(self,year=time.localtime()[0]-(time.localtime()[1]==1), quarter=(time.localtime()[1] if time.localtime()[1]>3 else 12)//3):
+    def getStockBasics(self,year=time.localtime()[0]-(time.localtime()[1]==1), quarter=((time.localtime()[1]-1) if time.localtime()[1]>3 else 12)//3):
         basics = tushare.get_stock_basics()
 
         it = basics.iterrows()
@@ -32,7 +32,7 @@ class TushareUtility:
         conn.close()
 
     #基本面数据的动态调用函数
-    def getBasicListData(self, func, year=time.localtime()[0]-(time.localtime()[1]<4), quarter=(time.localtime()[1] if time.localtime()[1]>3 else 12)//3, month=time.localtime()[1], day=time.localtime()[2], bseq=False):
+    def getBasicListData(self, func, year=time.localtime()[0]-(time.localtime()[1]<4), quarter=((time.localtime()[1]-1) if time.localtime()[1]>3 else 12)//3, month=time.localtime()[1], day=time.localtime()[2], bseq=False):
         ip_module_cls=importlib.import_module('.', 'tushare')
         ip_method = getattr(ip_module_cls, func)
         data = ip_method(year, quarter)
@@ -209,7 +209,7 @@ class TushareUtility:
             l = []
 
             for row in it:
-                ll=[e if not isinstance(e, Timestamp) else (str(e.year)+'-'+str(e.month).zfill(2)+'-'+str(e.day).zfill(2)) for e in row[1]]
+                ll=[e if not isinstance(e, pd.Timestamp) else (str(e.year)+'-'+str(e.month).zfill(2)+'-'+str(e.day).zfill(2)) for e in row[1]]
                 #print(ll)
                 l.append(ll)
 

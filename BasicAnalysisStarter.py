@@ -1,15 +1,15 @@
-from PyQt5 import QtWidgets, Qt
+from PyQt5 import QtWidgets
+from PyQt5.Qt import Qt
 import sys
 
 from org.zqb.stock.ui.StockAnalysis.UIStockAnalysis import UIStockAnalysis
-from org.zqb.stock.ui.StockAnalysis.UIStockAnalysisWindow import UIStockAnalysisWindow
-from org.zqb.stock.ui.StockAnalysis.UIStockAnalysisWnd import UIStockAnalysisWnd
+from org.zqb.stock.ui.StockAnalysis.WndStockAnalysis import WndStockAnalysis
+from org.zqb.stock.ui.StockAnalysis.UIStockAnalysisExt import UIStockAnalysisExt
 
-QtWidgets.QApplication.setAttribute(Qt.Qt.AA_EnableHighDpiScaling);
+QtWidgets.QApplication.setAttribute(Qt.AA_EnableHighDpiScaling);
 app = QtWidgets.QApplication(sys.argv)
-QtWidgets.QMainWindow
-window = UIStockAnalysisWindow();
-win = UIStockAnalysisWnd()
+window = WndStockAnalysis();
+win = UIStockAnalysisExt()
 window.analysisWnd = win
 win.initStockAnalysisView(window)
 window.show()

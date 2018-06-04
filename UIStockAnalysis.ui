@@ -17,6 +17,9 @@
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
      <widget class="QTableView" name="tableViewStock">
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
       <property name="acceptDrops">
        <bool>true</bool>
       </property>
@@ -29,11 +32,14 @@
       <property name="defaultDropAction">
        <enum>Qt::MoveAction</enum>
       </property>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
       <property name="selectionMode">
        <enum>QAbstractItemView::SingleSelection</enum>
       </property>
       <property name="selectionBehavior">
-       <enum>QAbstractItemView::SelectColumns</enum>
+       <enum>QAbstractItemView::SelectItems</enum>
       </property>
       <property name="sortingEnabled">
        <bool>true</bool>
